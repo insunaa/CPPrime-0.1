@@ -17,14 +17,10 @@ uint64 vr = -1;
 void getOS()
 {
     std::flush(std::cout);
-#ifdef __unix__
-    std::system("uname -vrs");
-#ifndef __GNUC__
-#elifdef _WIN32
+#ifdef _WIN32
     std::system("ver");
-#elifdef __APPLE__
-    std::system("uname -vrs");
-#endif
+#else
+   std::system("uname -vrs");
 #endif
 }
 
