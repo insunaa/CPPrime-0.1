@@ -5,4 +5,4 @@ To build CPPrime use a compiler of your choice to compile `CPPrime.cpp` or use `
 
 If you choose meson, be sure to change the configuration with `meson configure` as the default buildtype is debug and there are no compiler arguments for architecture optimization set.
 
-A huge thanks goes to the guys at BenchMate without whom this wouldn't have been possible!
+A huge thanks goes to the guys at BenchMate and monabuntur without whom this wouldn't have been possible!
