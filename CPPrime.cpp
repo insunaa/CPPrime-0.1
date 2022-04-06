@@ -20,7 +20,7 @@ void getOS()
 #ifdef _WIN32
     std::system("ver");
 #else
-   std::system("uname -vrs");
+    std::system("uname -vrs");
 #endif
 }
 
@@ -82,23 +82,20 @@ void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time)
               << std::endl;
 }
 
-uint64 calc(u_char* sieve, uint64 limit, uint64 sqrtlimit, std::chrono::steady_clock::time_point& start_time)
+uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_clock::time_point& start_time)
 {
-    uint64 limit1, sqrtlimit1, loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o, nd, md;
+    uint64 loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o, nd, md;
     int32 loop = 0;
-
-    limit1     = limit + 1;
-    sqrtlimit1 = sqrtlimit + 1;
 
     loopstep   = sqrtlimit / 10;
     nextstep   = loopstep;
 
-    for (x = 1; x < sqrtlimit1; ++x)
+    for (x = 1; x < sqrtlimit + 1; ++x)
     {
         x2   = x * x;
         x2b3 = x2 * 3;
         x2b4 = x2b3 + x2;
-        for (y = 1; y < sqrtlimit1; ++y)
+        for (y = 1; y < sqrtlimit + 1; ++y)
         {
             y2 = y * y;
             n  = x2b4 + y2;
@@ -139,7 +136,7 @@ uint64 calc(u_char* sieve, uint64 limit, uint64 sqrtlimit, std::chrono::steady_c
         {
             x2 = x * x;
 
-            for (y = x2; y < limit1; y += x2)
+            for (y = x2; y < limit + 1; y += x2)
             {
                 sieve[y / 8] &= ~(1 << (y % 8));
             }
@@ -155,6 +152,7 @@ uint64 calc(u_char* sieve, uint64 limit, uint64 sqrtlimit, std::chrono::steady_c
         }
         break;
     }
+    
     return x;
 }
 
@@ -162,6 +160,7 @@ void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, 
 {
     uint64 resultx, result;
     uint64 sieve_len = lldiv(limit, 8).quot;
+    uint64 sqrtlimit = std::sqrt(limit);
 
     printMemalloc(sieve_len);
 
@@ -170,7 +169,7 @@ void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, 
 
     std::cout << "Starting benchmark:" << std::endl << std::endl;
     start_time = std::chrono::steady_clock::now();
-    resultx    = calc(sieve, limit, uint64(std::sqrt(limit)), start_time);
+    resultx    = calc(sieve, limit, sqrtlimit, start_time);
     end_time   = std::chrono::steady_clock::now();
     result     = std::floor(std::log2(sieve[resultx])) + resultx * 8;
 
