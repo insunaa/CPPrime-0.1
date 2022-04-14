@@ -26,20 +26,21 @@ void getOS()
 
 void printHead(uint64 qpf)
 {
-    auto res   = std::lldiv(pr, 1000000);
-    uint64 hpr = res.quot;
+    uint64 hpr = pr / 1000000;
     char ppr   = 'M';
     if (hpr > 1024)
     {
-        res = std::lldiv(hpr, 1000);
-        hpr = res.quot;
+        hpr = hpr / 1000;
         ppr = 'B';
     }
-
-    std::cout << "-------------------------------------------------------------------------------------" << std::endl
-              << "                                     CPPrime 0.1                                     " << std::endl
-              << "-------------------------------------------------------------------------------------" << std::endl
+    
+    std::string banner(85, '-');
+    std::string spacer(38, ' ');
+    std::cout << banner << std::endl
+              << spacer << "CPPrime 0.1" << spacer << std::endl
+              << banner << std::endl
               << std::endl;
+
     std::cout << "OS\t: ";
     getOS();
     std::cout << "Timer\t: " << qpf / (1000 * 1000) << " MHz" << std::endl;
@@ -95,32 +96,26 @@ uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady
         x2   = x * x;
         x2b3 = x2 * 3;
         x2b4 = x2b3 + x2;
+
         for (y = 1; y < sqrtlimit + 1; ++y)
         {
             y2 = y * y;
             n  = x2b4 + y2;
             nd = n % 12;
-
-            if (n <= limit && (nd == 1 || nd == 5))
-            {
-                sieve[n / 8] ^= 1 << (n % 8);
-            }
-
             m  = x2b3 + y2;
             md = m % 12;
+            o  = x2b3 - y2;
+
+            if (n <= limit && (nd == 1 || nd == 5))
+                sieve[n / 8] ^= 1 << (n % 8);
 
             if (m <= limit && md == 7)
-            {
                 sieve[m / 8] ^= 1 << (m % 8);
-            }
-
-            o = x2b3 - y2;
 
             if (x > y && o <= limit && o % 12 == 11)
-            {
                 sieve[o / 8] ^= 1 << (o % 8);
-            }
         }
+
         if (loop < 9 && x > nextstep)
         {
             nextstep += loopstep;
@@ -137,21 +132,13 @@ uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady
             x2 = x * x;
 
             for (y = x2; y < limit + 1; y += x2)
-            {
                 sieve[y / 8] &= ~(1 << (y % 8));
-            }
         }
     }
 
-    for (x = lldiv(limit, 8).quot; x > 0;)
-    {
-        if (sieve[x] == 0)
-        {
-            --x;
-            continue;
-        }
-        break;
-    }
+    x = limit / 8;
+    while (sieve[x] == 0)
+        --x;
     
     return x;
 }
@@ -159,7 +146,7 @@ uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady
 void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, std::chrono::steady_clock::time_point& end_time)
 {
     uint64 resultx, result;
-    uint64 sieve_len = lldiv(limit, 8).quot;
+    uint64 sieve_len = limit / 8;
     uint64 sqrtlimit = std::sqrt(limit);
 
     printMemalloc(sieve_len);
