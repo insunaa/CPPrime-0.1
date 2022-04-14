@@ -1,9 +1,7 @@
 #include <chrono>
 #include <cmath>
-#include <cstdlib>
 #include <iostream>
 #include <iomanip>
-#include <ostream>
 #include <ratio>
 #include <string>
 #include <cstring>
@@ -13,11 +11,12 @@
 typedef unsigned __int64 uint64;
 typedef unsigned __int32 uint32;
 typedef __int32 int32;
-typedef unsigned char u_char;
+typedef unsigned char uchar;
 #else
 typedef u_int64_t uint64;
 typedef u_int32_t uint32;
 typedef int32_t int32;
+typedef u_char uchar;
 #endif
 
 uint64 pr = 0;
@@ -92,7 +91,7 @@ void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time)
               << std::endl;
 }
 
-uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_clock::time_point& start_time)
+uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_clock::time_point& start_time)
 {
     uint64 loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o, nd, md;
     int32 loop = 0;
@@ -160,9 +159,9 @@ void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, 
 
     printMemalloc(sieve_len);
 
-    u_char* sieve = nullptr;
-    sieve         = (u_char*)malloc((sieve_len + 1) * sizeof(u_char));
-    std::memset(sieve, (u_char)0, (sieve_len + 1) * sizeof(u_char));
+    uchar* sieve  = nullptr;
+    sieve         = (uchar*)malloc((sieve_len + 1) * sizeof(uchar));
+    std::memset(sieve, (uchar)0, (sieve_len + 1) * sizeof(uchar));
 
     std::cout << "Starting benchmark:" << std::endl << std::endl;
     start_time = std::chrono::steady_clock::now();
