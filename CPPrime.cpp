@@ -2,9 +2,11 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <ostream>
 #include <ratio>
 #include <string>
+#include <cstring>
 #include <sys/types.h>
 
 typedef u_int64_t uint64;
@@ -79,7 +81,7 @@ void printMemalloc(uint64 bytes)
 
 void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time)
 {
-    std::cout << "\t Step " << loop << " ....... " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() / 1000.f << " s"
+    std::cout << "\t Step " << std::setw(2) << loop << " ....... " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() / 1000.f << " s"
               << std::endl;
 }
 
@@ -91,13 +93,13 @@ uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady
     loopstep   = sqrtlimit / 10;
     nextstep   = loopstep;
 
-    for (x = 1; x < sqrtlimit + 1; ++x)
+    for (x = 1; x <= sqrtlimit; ++x)
     {
         x2   = x * x;
         x2b3 = x2 * 3;
         x2b4 = x2b3 + x2;
 
-        for (y = 1; y < sqrtlimit + 1; ++y)
+        for (y = 1; y <= sqrtlimit; ++y)
         {
             y2 = y * y;
             n  = x2b4 + y2;
@@ -116,7 +118,7 @@ uint64 calc(u_char* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady
                 sieve[o / 8] ^= 1 << (o % 8);
         }
 
-        if (loop < 9 && x > nextstep)
+        if (x > nextstep)
         {
             nextstep += loopstep;
             ++loop;
@@ -153,6 +155,7 @@ void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, 
 
     u_char* sieve = nullptr;
     sieve         = (u_char*)malloc((sieve_len + 1) * sizeof(u_char));
+    std::memset(sieve, (u_char)0, (sieve_len + 1) * sizeof(u_char));
 
     std::cout << "Starting benchmark:" << std::endl << std::endl;
     start_time = std::chrono::steady_clock::now();
@@ -165,7 +168,7 @@ void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, 
         free(sieve);
         sieve = nullptr;
     }
-    std::cout << "\t Sieve Scan ... " << std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count() / 1000.f << " s" << std::endl << std::endl;
+    std::cout << "\t Sieve Scan .... " << std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count() / 1000.f << " s" << std::endl << std::endl;
 
     printScore(result, result == vr, std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time));
 }
