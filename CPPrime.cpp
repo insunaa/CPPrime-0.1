@@ -9,9 +9,16 @@
 #include <cstring>
 #include <sys/types.h>
 
+#ifdef _WIN32
+typedef unsigned __int64 uint64;
+typedef unsigned __int32 uint32;
+typedef __int32 int32;
+typedef unsigned char u_char;
+#else
 typedef u_int64_t uint64;
 typedef u_int32_t uint32;
 typedef int32_t int32;
+#endif
 
 uint64 pr = 0;
 uint64 vr = -1;
