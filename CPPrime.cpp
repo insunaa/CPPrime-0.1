@@ -43,7 +43,7 @@ void printHead(uint64 qpf)
     }
     
     std::string banner(85, '-');
-    std::string spacer(38, ' ');
+    std::string spacer(37, ' ');
     std::cout << banner << std::endl
               << spacer << "CPPrime 0.1" << spacer << std::endl
               << banner << std::endl
