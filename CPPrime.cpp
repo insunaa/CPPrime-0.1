@@ -100,7 +100,6 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
     nextstep   = loopstep;
     x = 1;
 
-    //for (x = 1; x <= sqrtlimit; ++x)
     while (true)
     {
         tmp1 = (x <= sqrtlimit);
@@ -111,7 +110,6 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
         x2b3 = x2 * 3;
         x2b4 = x2b3 + x2;
 
-        //for (y = 1; y <= sqrtlimit; ++y)
         y = 1;
         while (true)
         {
@@ -184,36 +182,8 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
             }
             skiploop3:;
 
-
-
-            //if (n <= limit && (n % 12 == 5 || n % 12 == 1))
-            //    sieve[n >> 3] ^= 1 << (n & 7);
-
-            //if (m <= limit && m % 12 == 7)
-            //    sieve[m >> 3] ^= 1 << (m & 7);
-
-            //if (x > y && o <= limit && o % 12 == 11)
-            //    sieve[o >> 3] ^= 1 << (o & 7);
             y++;
         }
-        /*tmp2 = (loop < 9);
-        if (tmp2) {}
-        else
-        {
-            tmp1 = tmp2;
-            goto skiploop4;
-        }
-        tmp2 = (x > nextstep);
-        tmp1 = tmp2;
-        skiploop4:;
-        if (tmp1)
-        {
-            nextstep += loopstep;
-            loop++;
-
-            printStatus(loop, start_time);
-        }*/
-
         if (x > nextstep && loop < 9)
         {
             nextstep += loopstep;
