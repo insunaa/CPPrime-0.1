@@ -93,34 +93,126 @@ void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time)
 
 uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_clock::time_point& start_time)
 {
-    uint64 loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o;
+    uint64 loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o, nd, md, tmp3;
     int32 loop = 0;
-
+    bool tmp1, tmp2, tmpz;
     loopstep   = sqrtlimit / 10;
     nextstep   = loopstep;
+    x = 1;
 
-    for (x = 1; x <= sqrtlimit; ++x)
+    //for (x = 1; x <= sqrtlimit; ++x)
+    while (true)
     {
+        tmp1 = (x <= sqrtlimit);
+        if (!tmp1)
+            break;
+
         x2   = x * x;
         x2b3 = x2 * 3;
         x2b4 = x2b3 + x2;
 
-        for (y = 1; y <= sqrtlimit; ++y)
+        //for (y = 1; y <= sqrtlimit; ++y)
+        y = 1;
+        while (true)
         {
+            tmp1 = (y <= sqrtlimit);
+            if (!tmp1)
+                break;
+
             y2 = y * y;
             n  = x2b4 + y2;
-            m  = x2b3 + y2;
+
+            nd = (n % 12);
+            tmp1 = (n <= limit);
+            if (tmp1) {}
+            else
+            {
+                goto skiploop1;
+            }
+            switch (nd) {
+                case 1:
+                case 5:
+                tmp1 = 1;
+                break;
+                default:
+                tmp1 = 0;
+                break;
+            }
+            if (tmp1)
+            {
+                tmp3 = n / 8;
+                sieve[tmp3] ^= (1 << (n % 8));
+            }
+            skiploop1:;
+
+            m = x2b3 + y2;
+            md = (m % 12);
+
+            tmp1 = (m <= limit);
+            if (tmp1) {}
+            else
+            {
+                goto skiploop2;
+            }
+            tmp1 = (md == 7);
+            if (tmp1)
+            {
+                tmp3 = m / 8;
+                sieve[tmp3] ^= (1 << (m % 8));
+            }
+            skiploop2:;
+
             o  = x2b3 - y2;
 
-            if (n <= limit && (n % 12 == 5 || n % 12 == 1))
-                sieve[n >> 3] ^= 1 << (n & 7);
+            tmp1 = (x > y);
+            if (tmp1) {}
+            else
+            {
+                goto skiploop3;
+            }
+            tmp1 = (o <= limit);
+            if (tmp1) {}
+            else
+            {
+                goto skiploop3;
+            }
+            tmp1 = ((o % 12) == 11);
+            if (tmp1)
+            {
+                tmp3 = o / 8;
+                sieve[tmp3] ^= (1 << (o % 8));
+            }
+            skiploop3:;
 
-            if (m <= limit && m % 12 == 7)
-                sieve[m >> 3] ^= 1 << (m & 7);
 
-            if (x > y && o <= limit && o % 12 == 11)
-                sieve[o >> 3] ^= 1 << (o & 7);
+
+            //if (n <= limit && (n % 12 == 5 || n % 12 == 1))
+            //    sieve[n >> 3] ^= 1 << (n & 7);
+
+            //if (m <= limit && m % 12 == 7)
+            //    sieve[m >> 3] ^= 1 << (m & 7);
+
+            //if (x > y && o <= limit && o % 12 == 11)
+            //    sieve[o >> 3] ^= 1 << (o & 7);
+            y++;
         }
+        /*tmp2 = (loop < 9);
+        if (tmp2) {}
+        else
+        {
+            tmp1 = tmp2;
+            goto skiploop4;
+        }
+        tmp2 = (x > nextstep);
+        tmp1 = tmp2;
+        skiploop4:;
+        if (tmp1)
+        {
+            nextstep += loopstep;
+            loop++;
+
+            printStatus(loop, start_time);
+        }*/
 
         if (x > nextstep && loop < 9)
         {
@@ -129,6 +221,7 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
 
             printStatus(loop, start_time);
         }
+        x++;
     }
 
     for (x = 5; x < sqrtlimit; ++x)
