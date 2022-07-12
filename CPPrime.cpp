@@ -95,7 +95,7 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
 {
     uint64 loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o, nd, md, tmp3;
     int32 loop = 0;
-    bool tmp1, tmpz;
+    bool tmp1;
     loopstep   = sqrtlimit / 10;
     nextstep   = loopstep;
     x = 1;
