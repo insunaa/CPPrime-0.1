@@ -1,10 +1,12 @@
 #include <chrono>
 #include <cmath>
+#include <cstddef>
 #include <iostream>
 #include <iomanip>
 #include <ratio>
 #include <string>
 #include <cstring>
+#include <thread>
 #include <sys/types.h>
 
 #ifdef _WIN32
@@ -22,7 +24,7 @@ typedef u_char uchar;
 uint64 pr = 0;
 uint64 vr = -1;
 
-void getOS()
+void getOS() noexcept
 {
     std::flush(std::cout);
 #ifdef _WIN32
@@ -32,7 +34,7 @@ void getOS()
 #endif
 }
 
-void printHead(uint64 qpf)
+void printHead(uint64 qpf) noexcept
 {
     uint64 hpr = pr / 1000000;
     char ppr   = 'M';
@@ -55,7 +57,7 @@ void printHead(uint64 qpf)
     std::cout << "Prime\t: " << hpr << ppr << " - up to " << pr << std::endl;
 }
 
-void printScore(uint64 prime, bool valid, std::chrono::duration<int, std::milli> time)
+void printScore(uint64 prime, bool valid, std::chrono::duration<int, std::milli> time) noexcept
 {
     if (!valid)
         std::cout << "INVALID: " << prime << std::endl;
@@ -66,7 +68,7 @@ void printScore(uint64 prime, bool valid, std::chrono::duration<int, std::milli>
     }
 }
 
-void printMemalloc(uint64 bytes)
+void printMemalloc(uint64 bytes) noexcept
 {
     float size       = bytes / 1000000000.f;
     std::string name = "GB";
@@ -85,7 +87,7 @@ void printMemalloc(uint64 bytes)
     std::cout << "Sieve allocation: " << size << " " << name << std::endl;
 }
 
-void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time)
+void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time) noexcept
 {
     std::cout << "\t Step " << std::setw(2) << loop << " ....... " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() / 1000.f << " s"
               << std::endl;
@@ -127,7 +129,7 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
             nextstep += loopstep;
             ++loop;
 
-            printStatus(loop, start_time);
+            std::thread(printStatus, std::ref(loop), std::ref(start_time)).detach();
         }
     }
 
@@ -149,7 +151,7 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
     return x;
 }
 
-void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, std::chrono::steady_clock::time_point& end_time)
+void benchmark(uint64 limit, std::chrono::steady_clock::time_point& start_time, std::chrono::steady_clock::time_point& end_time) noexcept
 {
     uint64 resultx, result;
     uint64 sieve_len = limit / 8;
