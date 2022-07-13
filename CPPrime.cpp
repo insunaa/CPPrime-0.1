@@ -91,7 +91,7 @@ void printStatus(int& loop, std::chrono::steady_clock::time_point& start_time)
               << std::endl;
 }
 
-uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_clock::time_point& start_time)
+uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_clock::time_point& start_time) noexcept
 {
     uint64 loopstep, nextstep, x, x2, x2b3, x2b4, y, y2, n, m, o;
     int32 loop = 0;
@@ -113,13 +113,13 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
             o  = x2b3 - y2;
 
             if (n <= limit && (n % 12 == 5 || n % 12 == 1))
-                sieve[n >> 3] ^= 1 << (n & 7);
+                sieve[n / 8] ^= 1 << (n % 8);
 
             if (m <= limit && m % 12 == 7)
-                sieve[m >> 3] ^= 1 << (m & 7);
+                sieve[m / 8] ^= 1 << (m % 8);
 
             if (x > y && o <= limit && o % 12 == 11)
-                sieve[o >> 3] ^= 1 << (o & 7);
+                sieve[o / 8] ^= 1 << (o % 8);
         }
 
         if (x > nextstep && loop < 9)
@@ -138,11 +138,11 @@ uint64 calc(uchar* sieve, uint64& limit, uint64& sqrtlimit, std::chrono::steady_
             x2 = x * x;
 
             for (y = x2; y < limit + 1; y += x2)
-                sieve[y >> 3] &= ~(1 << (y & 7));
+                sieve[y / 8] &= ~(1 << (y % 8));
         }
     }
 
-    x = limit >> 3;
+    x = limit / 8;
     while (sieve[x] == 0)
         --x;
     
